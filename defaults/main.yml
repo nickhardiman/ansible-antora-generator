@@ -4,3 +4,5 @@ nvm_installed: no
 node_installed: no
 antora_installed: no
 
+apache_host: antora1.lab.example.com
+
