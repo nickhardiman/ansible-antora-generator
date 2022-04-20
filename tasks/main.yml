@@ -5,4 +5,5 @@
 - include_tasks: nvm.yml
 - include_tasks: node.yml
 - include_tasks: antora.yml
+- include_tasks: content.yml
 

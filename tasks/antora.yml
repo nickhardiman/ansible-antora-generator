@@ -1,4 +1,6 @@
 ---
+# following instructions in 
+# https://docs.antora.org/antora/latest/install-and-run-quickstart/
 
 # Use an interactive shell.
 # nvm commands add its bin directory to the $PATH.
@@ -32,13 +34,6 @@
     path: ~/docs-site/build
     state: directory
 
-# Probs gotta make this better
-- name: Symlink to the docroot
-  ansible.builtin.file:
-    src: "/var/www/{{ apache_host }}"
-    dest: ~/docs-site/build/site
-    state: link
-
 # only required if antora's modules are stored here using 'npm i -D -E ...' 
 - name: Create a JSON file
   ansible.builtin.copy:
@@ -54,7 +49,8 @@
     cmd: bash -i -c 'npm i -g @antora/cli@3.0.0 @antora/site-generator@3.0.0'
   args:
     chdir: "$HOME/docs-site"
-    creates: "$HOME/.nvm/versions/node/v16.14.2/lib/node_modules/@antora"
+    # Not happy about specifying the version in this path.
+    #creates: "$HOME/.nvm/versions/node/v16.14.2/lib/node_modules/@antora"
   register: r_npm_antora
   when: not antora_installed
   changed_when: yes

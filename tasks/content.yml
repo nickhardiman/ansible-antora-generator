@@ -1,0 +1,15 @@
+---
+# my content
+# and my customizations
+
+# publish to apache virtualhost docroot
+- name: Symlink to the docroot
+  ansible.builtin.file:
+    src: "/var/www/{{ apache_host }}"
+    dest: ~/docs-site/build/site
+    state: link
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo:  https://github.com/nickhardiman/articles-fedora-rpi4
+    dest: '~'
