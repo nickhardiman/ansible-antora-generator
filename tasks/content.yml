@@ -3,13 +3,34 @@
 # and my customizations
 
 # publish to apache virtualhost docroot
-- name: Symlink to the docroot
+- name: remove docs-site, ready for my github version
+  ansible.builtin.file:
+    dest: ~/docs-site
+    state: absent
+
+- name: create local developer copies of my content
+  ansible.builtin.git:
+    repo:  "https://github.com/nickhardiman/{{ item }}"
+    dest: "~/{{ item }}"
+  loop:
+  - docs-site
+  - docs-ui
+  - articles-fedora-rpi4
+  - articles-rhel8
+  - articles-iac
+  - articles-ocp4
+
+# The build command 
+#   antora --fetch antora-playbook.yml
+# publishes to build/site.
+# Place site files in the apache virtualhost docroot
+- name: create a build subdirectory
+  ansible.builtin.file:
+    dest: ~/docs-site/build
+    state: directory
+- name: symlink to the docroot
   ansible.builtin.file:
     src: "/var/www/{{ apache_host }}"
     dest: ~/docs-site/build/site
     state: link
 
-- name: Git checkout
-  ansible.builtin.git:
-    repo:  https://github.com/nickhardiman/articles-fedora-rpi4
-    dest: '~'
