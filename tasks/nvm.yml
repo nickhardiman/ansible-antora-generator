@@ -1,0 +1,37 @@
+---
+
+# Use an interactive shell.
+# nvm is a function, not an executable file.
+# It is created using commands in a resource file.
+# Tell bash to be interactive (-i) and read the .bashrc file
+# before running the command (-c).
+# We don't need a login shell (-l) which tells bash to read .bash_profile.
+#
+# There may be some luck to be had with "become_flags", 
+# but -i, -c and -l mean different things to sudo. 
+#
+- name: is nvm already installed?
+  ansible.builtin.shell: 
+    cmd: bash -i -c 'nvm -v'
+  register: r_nvm
+  ignore_errors: yes
+
+- set_fact:
+    nvm_installed: yes
+  when: r_nvm.rc == 0
+
+- debug:
+    var: nvm_installed
+
+- name: Install nvm
+  vars:
+    nvm_tag: v0.39.1
+  ansible.builtin.shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_tag }}/install.sh | bash
+  args:
+    executable: /bin/bash
+    chdir: "$HOME"
+    creates: "$HOME/.nvm/nvm.sh"
+  when: not nvm_installed
+  changed_when: yes
+

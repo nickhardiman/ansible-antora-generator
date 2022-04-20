@@ -1,0 +1,40 @@
+---
+- name: install packages
+  yum: 
+    name: 
+    - httpd
+    state: latest 
+
+- name: start and enable service httpd
+  ansible.builtin.service:
+    name: httpd
+    enabled: yes
+    state: started
+
+# SELinux - this inherits file type "httpd_sys_content_t"
+- name: add another document root
+  file:
+    path: "/var/www/{{ apache_host }}"
+    state: directory
+    owner: "{{ apache_user }}"
+    group: "{{ apache_group }}"
+    mode: '2775'
+
+- name: Copy index test page
+  template:
+    src: index.html.j2
+    dest: "/var/www/{{ apache_host }}/index.html"
+
+- name: Set up Apache virtualHost
+  template:
+    src: virtualhost.conf.j2
+    dest: "/etc/httpd/conf.d/{{ apache_config_file }}"
+  notify: Reload Apache
+
+- name: permit traffic in default zone
+  ansible.posix.firewalld:
+    service: "{{ apache_fw_service }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+

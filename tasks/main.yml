@@ -1,0 +1,8 @@
+---
+# tasks file for antora_generator
+#
+- include_tasks: apache.yml
+- include_tasks: nvm.yml
+- include_tasks: node.yml
+- include_tasks: antora.yml
+

@@ -1,0 +1,23 @@
+---
+- name: is node already installed?
+  ansible.builtin.shell: 
+    cmd: bash -i -c 'node -v'
+  register: r_node
+  ignore_errors: yes
+
+- set_fact:
+    node_installed: yes
+  when: r_node.rc == 0
+
+- debug:
+    var: node_installed
+
+- name: Install node
+  ansible.builtin.shell: >
+    bash -i -l -c 'nvm install --lts'
+  args:
+    chdir: "$HOME"
+    creates: "$HOME/.nvm/versions/node"
+  when: not node_installed
+  changed_when: yes
+

@@ -1,0 +1,14 @@
+---
+# defaults file for antora-generator
+nvm_installed: no
+node_installed: no
+antora_installed: no
+
+# apache 
+apache_user: root
+apache_group: nick
+apache_host: antora1.lab.example.com
+apache_config_file: "{{ apache_host }}.conf"
+apache_port: "80"
+apache_fw_service: http
+
