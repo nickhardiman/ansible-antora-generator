@@ -29,9 +29,17 @@
 
 - name: Create a working directory
   ansible.builtin.file:
-    path: ~/docs-site
+    path: ~/docs-site/build
     state: directory
 
+# Probs gotta make this better
+- name: Symlink to the docroot
+  ansible.builtin.file:
+    src: "/var/www/{{ apache_host }}"
+    dest: ~/docs-site/build/site
+    state: link
+
+# only required if antora's modules are stored here using 'npm i -D -E ...' 
 - name: Create a JSON file
   ansible.builtin.copy:
     content: '{}'
@@ -40,10 +48,10 @@
 - name: Install antora
   ansible.builtin.shell:
     # places files in ~/docs-site/node_modules/
-    cmd: bash -i -c 'npm i -D -E @antora/cli@3.0.0 @antora/site-generator@3.0.0'
+    #cmd: bash -i -c 'npm i -D -E @antora/cli@3.0.0 @antora/site-generator@3.0.0'
     # places files in ~/.nvm/versions/node/v16.14.2/lib/node_modules/@antora/site-generator/node_modules/
     # global install (-g) needs nvm work to put files somewhere more global, like /usr/local/
-    #cmd: bash -i -c 'npm i -g @antora/cli@3.0.0 @antora/site-generator@3.0.0'
+    cmd: bash -i -c 'npm i -g @antora/cli@3.0.0 @antora/site-generator@3.0.0'
   args:
     chdir: "$HOME/docs-site"
     creates: "$HOME/.nvm/versions/node/v16.14.2/lib/node_modules/@antora"
@@ -55,3 +63,7 @@
     #verbosity: 1
     var: r_npm_antora
 
+# next  -  
+# fork, clone and edit the default UI project 
+# https://gitlab.com/antora/antora-ui-default
+#
